@@ -23,7 +23,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="my-icons.html">
 
-<link rel="lazy-import" href="my-view1.html">
+<link rel="lazy-import" href="my-home.html">
 <link rel="lazy-import" href="my-view2.html">
 <link rel="lazy-import" href="my-view3.html">
 <link rel="lazy-import" href="my-view404.html">
@@ -81,7 +81,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <app-drawer id="drawer" slot="drawer">
         <app-toolbar>Menu</app-toolbar>
         <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
-          <a name="view1" href="view1">View One</a>
+          <a name="home" href="home">Home</a>
           <a name="view2" href="view2">View Two</a>
           <a name="view3" href="view3">View Three</a>
         </iron-selector>
@@ -94,7 +94,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <app-toolbar>
             <paper-icon-button icon="my-icons:menu" drawer-toggle></paper-icon-button>
             <div main-title>My App</div>
-            <paper-button>Login</paper-button>
+            <paper-button on-tap="login">Login</paper-button>
           </app-toolbar>
         </app-header>
 
@@ -103,7 +103,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             attr-for-selected="name"
             fallback-selection="view404"
             role="main">
-          <my-view1 name="view1"></my-view1>
+          <my-home name="home"></my-home>
           <my-view2 name="view2"></my-view2>
           <my-view3 name="view3"></my-view3>
           <my-view404 name="view404"></my-view404>
@@ -152,8 +152,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
 
         // If no page was found in the route data, page will be an empty string.
-        // Deault to 'view1' in that case.
-        this.page = page || 'view1';
+        // Deault to 'home' in that case.
+        this.page = page || 'home';
 
         // Close a non-persistent drawer when the page & route are changed.
         if (!this.$.drawer.persistent) {
@@ -173,6 +173,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       _showPage404() {
         this.page = 'view404';
+      }
+      
+      login() {
+        console.log('login')
       }
     }
 
