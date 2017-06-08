@@ -23,6 +23,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <h2>MicroBlog</h2>
     
+    <form>
+      <input id="title" placeholder="Title"><br/>
+      <textarea id="text"></textarea><br/>
+      <button on-click="createBlog">Create blog</button>
+    </form>
+    
     <template is="dom-repeat" items="[[blogs]]">
       <h3>[[item.title]]</h3>
       <p>
@@ -52,6 +58,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           var data = child.val();
           data.$key = child.key;
           this.push('blogs', data)
+        })
+      }
+      
+      createBlog(e) {
+        e.preventDefault();
+        var ref = firebase.database().ref('blogModel/blog')
+        var key = ref.push().key;
+        var updates = {};
+        updates[key] = {
+          title: this.shadowRoot.querySelector('#title').value,
+          text: this.shadowRoot.querySelector('#text').value,
+          owner: this.user.uid
+        }
+        
+        ref.update(updates).then(() => {
+          this.shadowRoot.querySelector('#title').value = ''
+          this.shadowRoot.querySelector('#text').value = ''
         })
       }
     }
