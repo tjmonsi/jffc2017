@@ -21,17 +21,39 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     </style>
 
-    <div class="card">
-      <div class="circle">1</div>
-      <h1>View One</h1>
-      <p>Ut labores minimum atomorum pro. Laudem tibique ut has.</p>
-      <p>Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Cu mei vide viris gloriatur, at populo eripuit sit.</p>
-    </div>
+    <h2>MicroBlog</h2>
+    
+    <template is="dom-repeat" items="[[blogs]]">
+      <h3>[[item.title]]</h3>
+      <p>
+        [[item.text]]
+      </p>
+    </template>
   </template>
 
   <script>
     class MyHome extends Polymer.Element {
       static get is() { return 'my-home'; }
+      
+      static get properties() {
+        return {
+          blogs: {
+            type: Array,
+            value: []
+          }
+        }
+      }
+      
+      connectedCallback() {
+        super.connectedCallback();
+        
+        var ref = firebase.database().ref('blogModel/blog');
+        ref.on('child_added', (child) => {
+          var data = child.val();
+          data.$key = child.key;
+          this.push('blogs', data)
+        })
+      }
     }
 
     window.customElements.define(MyHome.is, MyHome);
