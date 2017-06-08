@@ -209,6 +209,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           console.log(errorCode, errorMessage)
         });
       }
+      
+      logout() {
+        firebase.auth().signOut().then(() => {
+          this.user = null;
+        }).catch((error) => {
+          console.log(error)
+        });
+      }
     }
 
     window.customElements.define(MyApp.is, MyApp);
