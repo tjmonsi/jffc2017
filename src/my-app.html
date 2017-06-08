@@ -124,6 +124,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             reflectToAttribute: true,
             observer: '_pageChanged',
           },
+          user: Object,
           rootPattern: String,
           routeData: Object,
           subroute: String,
@@ -176,7 +177,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
       
       login() {
-        console.log('login')
+        this.user = null;
+        var provider = new firebase.auth.GoogleAuthProvider();
+        firebase.auth().signInWithPopup(provider).then((result) => {
+          this.user = result.user;
+        }).catch((error) => {
+          var errorCode = error.code;
+          var errorMessage = error.message;
+          console.log(errorCode, errorMessage)
+        });
       }
     }
 
