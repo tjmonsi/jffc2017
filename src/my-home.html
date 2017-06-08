@@ -23,11 +23,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <h2>MicroBlog</h2>
     
-    <form>
-      <input id="title" placeholder="Title"><br/>
-      <textarea id="text"></textarea><br/>
-      <button on-click="createBlog">Create blog</button>
-    </form>
+    <template is="dom-if" if="[[user]]">
+      <form>
+        <input id="title" placeholder="Title"><br/>
+        <textarea id="text"></textarea><br/>
+        <button on-click="createBlog">Create blog</button>
+      </form>  
+    </template>
+    
     
     <template is="dom-repeat" items="[[blogs]]">
       <h3>[[item.title]]</h3>
