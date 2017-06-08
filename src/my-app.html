@@ -94,7 +94,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <app-toolbar>
             <paper-icon-button icon="my-icons:menu" drawer-toggle></paper-icon-button>
             <div main-title>My App</div>
-            <paper-button on-tap="login">Login</paper-button>
+            <template is="dom-if" if="[[!user]]">
+              <paper-button on-tap="login">Login</paper-button>  
+            </template>
+            <template is="dom-if" if="[[user]]">
+              Hi [[user.displayName]]!
+              <paper-button on-tap="logout">Logout</paper-button>
+            </template>
           </app-toolbar>
         </app-header>
 
@@ -124,7 +130,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             reflectToAttribute: true,
             observer: '_pageChanged',
           },
-          user: Object,
+          user: {
+            type: Object,
+            value: null
+          },
           rootPattern: String,
           routeData: Object,
           subroute: String,
@@ -143,6 +152,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         // Get root pattern for app-route, for more info about `rootPath` see:
         // https://www.polymer-project.org/2.0/docs/upgrade#urls-in-templates
         this.rootPattern = (new URL(this.rootPath)).pathname;
+      }
+      
+      connectedCallback() {
+        super.connectedCallback();
+        firebase.auth().onAuthStateChanged((user) => {
+          if (user) {
+            this.user = user;
+            // User is signed in.
+          } else {
+            this.user = null;
+            // No user is signed in.
+          }
+        });
       }
 
       _routePageChanged(page) {
