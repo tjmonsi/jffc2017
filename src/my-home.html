@@ -66,19 +66,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       
       createBlog(e) {
         e.preventDefault();
-        var ref = firebase.database().ref('blogModel/blog')
-        var key = ref.push().key;
-        var updates = {};
-        updates[key] = {
-          title: this.shadowRoot.querySelector('#title').value,
-          text: this.shadowRoot.querySelector('#text').value,
-          owner: this.user.uid
+        var user = firebase.auth().currentUser;
+        if (user.uid) {
+          var ref = firebase.database().ref('blogModel/blog')
+          var key = ref.push().key;
+          var updates = {};
+          updates[key] = {
+            title: this.shadowRoot.querySelector('#title').value,
+            text: this.shadowRoot.querySelector('#text').value,
+            owner: user.uid
+          }
+          
+          ref.update(updates).then(() => {
+            this.shadowRoot.querySelector('#title').value = ''
+            this.shadowRoot.querySelector('#text').value = ''
+          })  
         }
         
-        ref.update(updates).then(() => {
-          this.shadowRoot.querySelector('#title').value = ''
-          this.shadowRoot.querySelector('#text').value = ''
-        })
       }
     }
 
