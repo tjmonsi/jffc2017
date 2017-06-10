@@ -85,6 +85,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
             
           })  
+        } else {
+          window.history.pushState({}, '', '/');
+          window.dispatchEvent(new CustomEvent('location-changed'));
         }
       }
       
