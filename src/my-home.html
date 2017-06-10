@@ -51,6 +51,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <a href="/?key=[[item.$key]]">
             <paper-button raised>Edit</paper-button>  
           </a>  
+          <paper-button raised on-tap="deleteBlog" key$="[[item.$key]]">Delete</paper-button>
         </template>
         
         
@@ -167,6 +168,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       
       checkUser(a, b) {
         return a === b
+      }
+      
+      deleteBlog(e) {
+        var id = e.target.getAttribute('key');
+        if (this.user.uid && id) {
+          firebase.database().ref('blogModel/blog/' + id).remove().then(() => {
+            console.log('deleted')
+          }).catch(error => {
+            console.log(error)
+          })
+        }
       }
     }
 
