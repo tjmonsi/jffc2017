@@ -40,13 +40,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <div class="card">
         <a href="/blog/?key=[[item.$key]]"><h3>[[item.title]]</h3></a>
         <hr>
-        <p class="subtext">
-          by: [[item.name]]<br/>
-          [[toDate(item.date)]]
-        </p>
-        <p>
-          [[item.text]]
-        </p>
+        <!--<p class="subtext">-->
+        <!--  by: [[item.name]]<br/>-->
+        <!--  [[toDate(item.date)]]-->
+        <!--</p>-->
+        <!--<p>-->
+        <!--  [[item.text]]-->
+        <!--</p>-->
         <template is="dom-if" if="[[checkUser(item.owner, user.uid)]]">
           <a href="/blog/?key=[[item.$key]]&edit=true">
             <paper-button raised>Edit</paper-button>  
