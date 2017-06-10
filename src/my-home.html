@@ -20,6 +20,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         padding: 10px;
       }
       
+      .subtext {
+        font-size: 12px;
+      }
     </style>
 
     <h2>MicroBlog</h2>
@@ -33,11 +36,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </template>
     
     
-    <template is="dom-repeat" items="[[blogs]]">
+    <template is="dom-repeat" items="[[blogs]]" sort="sortDate">
       <div class="card">
         <h3>[[item.title]]</h3>
         <hr>
-        <p>
+        <p class="subtext">
+          by: [[item.name]]<br/>
           [[toDate(item.date)]]
         </p>
         <p>
@@ -64,7 +68,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       connectedCallback() {
         super.connectedCallback();
         
-        var ref = firebase.database().ref('blogModel/blog');
+        var ref = firebase.database().ref('blogModel/blog').orderByChild('date');
         ref.on('child_added', (child) => {
           var data = child.val();
           data.$key = child.key;
@@ -92,6 +96,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             title: this.shadowRoot.querySelector('#title').value,
             text: this.shadowRoot.querySelector('#text').value,
             owner: user.uid,
+            name: user.displayName,
             date: firebase.database.ServerValue.TIMESTAMP
           }
           
@@ -105,6 +110,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       
       toDate(date) {
         return new Date(date)
+      }
+      
+      sortDate(a, b) {
+        return b.date - a.date
       }
     }
 
