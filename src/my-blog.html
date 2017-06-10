@@ -39,9 +39,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       [[item.text]]
     </p>
     <template is="dom-if" if="[[checkUser(item.owner, user.uid)]]">
-      <a href="/blog/?key=[[item.$key]]&edit=true">
-        <paper-button raised>Edit</paper-button>  
-      </a>  
+      <template is="dom-if" if="[[!edit]]">
+        <a href="/blog/?key=[[item.$key]]&edit=true">
+          <paper-button raised>Edit</paper-button>  
+        </a>    
+      </template>
+      <template is="dom-if" if="[[edit]]">
+        <a href="/blog/?key=[[item.$key]]">
+          <paper-button raised>Close Edit</paper-button>  
+        </a>  
+      </template>
       <paper-button raised on-tap="deleteBlog" key$="[[item.$key]]">Delete</paper-button>
     </template>
   </template>
