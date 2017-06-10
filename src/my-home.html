@@ -84,6 +84,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       connectedCallback() {
         super.connectedCallback();
         
+        // var ref = firebase.database().ref('blogModel/blog').orderByChild('date').limitToLast(3);
         var ref = firebase.database().ref('blogModel/list/date').orderByChild('date').limitToLast(3);
         
         var childChange = (child, prevChild) => {
