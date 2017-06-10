@@ -84,6 +84,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.push('blogs', data)
         })
         
+        ref.on('child_changed', (child) => {
+          var data = child.val();
+          data.$key = child.key;
+          for (var i = 0; i < this.blogs.length; i++) {
+            if (this.blogs[i].$key === child.key) {
+              this.splice('blogs', i, 1, data)
+              break;
+            }
+          }
+        })
+        
         ref.on('child_removed', (child) => {
           for (var i = 0; i < this.blogs.length; i++) {
             if (this.blogs[i].$key === child.key) {
@@ -123,7 +134,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           ref.update(updates).then(() => {
             this.shadowRoot.querySelector('#title').value = ''
             this.shadowRoot.querySelector('#text').value = ''
-            this.key = ''
+            this.blogId = ''
           })  
         }
         
