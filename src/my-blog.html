@@ -61,7 +61,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         return {
           blogId: {
             type: String,
-            observer: 'checkBlog'
+            observer: 'checkBlog',
+            value: null
           },
           item: {
             type: Object,
@@ -75,6 +76,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
       
       checkBlog(id) {
+        console.log(id)
         if (id) {
           var ref = firebase.database().ref('blogModel/blog/' + id)
           ref.on('value', (data) => {
