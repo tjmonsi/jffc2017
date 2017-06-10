@@ -66,6 +66,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           item: {
             type: Object,
             value: {}
+          },
+          edit: {
+            type: Boolean,
+            value: null
           }
         }
       }
@@ -74,8 +78,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         if (id) {
           var ref = firebase.database().ref('blogModel/blog/' + id)
           ref.on('value', (data) => {
+            
             this.item = data.val()
-            this.item.$key = data.key;
+            if (this.item) {
+              this.item.$key = data.key;  
+            }
+            
           })  
         }
       }
@@ -94,9 +102,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       
       deleteBlog(e) {
         var id = e.target.getAttribute('key');
+        console.log(id, this.user.uid)
         if (this.user.uid && id) {
           firebase.database().ref('blogModel/blog/' + id).remove().then(() => {
-            console.log('deleted')
+            window.history.pushState({}, '', '/');
+            window.dispatchEvent(new CustomEvent('location-changed'));
           }).catch(error => {
             console.log(error)
           })

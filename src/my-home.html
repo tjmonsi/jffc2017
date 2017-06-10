@@ -128,8 +128,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         if (id) {
           var ref = firebase.database().ref('blogModel/blog/' + id)
           ref.on('value', (data) => {
-            this.shadowRoot.querySelector('#title').value = data.val().title
-            this.shadowRoot.querySelector('#text').value = data.val().text
+            if (data.val()) {
+              this.shadowRoot.querySelector('#title').value = data.val().title
+              this.shadowRoot.querySelector('#text').value = data.val().text  
+            }
+            
           })  
         }
       }
