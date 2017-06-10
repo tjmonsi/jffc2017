@@ -47,9 +47,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <p>
           [[item.text]]
         </p>
-        <a href="/?key=[[item.$key]]">
-          <paper-button raised>Edit</paper-button>  
-        </a>
+        <template is="dom-if" if="[[checkUser(item.owner, user.uid)]]">
+          <a href="/?key=[[item.$key]]">
+            <paper-button raised>Edit</paper-button>  
+          </a>  
+        </template>
+        
         
       </div>
       
@@ -160,6 +163,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       
       sortDate(a, b) {
         return b.date - a.date
+      }
+      
+      checkUser(a, b) {
+        return a === b
       }
     }
 
