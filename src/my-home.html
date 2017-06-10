@@ -31,7 +31,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <form>
         <input id="title" placeholder="Title"><br/>
         <textarea id="text"></textarea><br/>
-        <button on-click="createBlog">Create blog</button>
+        <button on-click="submitBlog">Create blog</button>
       </form>  
     </template>
     
@@ -46,7 +46,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </p>
         <p>
           [[item.text]]
-        </p>  
+        </p>
+        <a href="/?key=[[item.$key]]">
+          <paper-button raised>Edit</paper-button>  
+        </a>
+        
       </div>
       
     </template>
@@ -61,6 +65,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           blogs: {
             type: Array,
             value: []
+          },
+          blogId: {
+            type: String,
+            value: '',
+            observer: 'checkBlogId'
           }
         }
       }
@@ -85,12 +94,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         })
       }
       
-      createBlog(e) {
+      checkBlogId(id) {
+        if (id) {
+          var ref = firebase.database().ref('blogModel/blog/' + id)
+          ref.on('value', (data) => {
+            this.shadowRoot.querySelector('#title').value = data.val().title
+            this.shadowRoot.querySelector('#text').value = data.val().text
+          })  
+        }
+        
+      }
+      
+      submitBlog(e) {
         e.preventDefault();
         var user = firebase.auth().currentUser;
         if (user.uid) {
           var ref = firebase.database().ref('blogModel/blog')
-          var key = ref.push().key;
+          var key = this.blogId || ref.push().key;
           var updates = {};
           updates[key] = {
             title: this.shadowRoot.querySelector('#title').value,
@@ -103,6 +123,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           ref.update(updates).then(() => {
             this.shadowRoot.querySelector('#title').value = ''
             this.shadowRoot.querySelector('#text').value = ''
+            this.key = ''
           })  
         }
         

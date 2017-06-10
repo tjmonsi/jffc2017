@@ -73,6 +73,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <app-route
         route="{{route}}"
         pattern="[[rootPattern]]:page"
+        query-params="{{queryParams}}"
         data="{{routeData}}"
         tail="{{subroute}}"></app-route>
 
@@ -109,7 +110,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             attr-for-selected="name"
             fallback-selection="view404"
             role="main">
-          <my-home name="home" user="[[user]]"></my-home>
+          <my-home name="home" user="[[user]]" blog-id="[[queryParams.key]]"></my-home>
           <my-view2 name="view2"></my-view2>
           <my-view3 name="view3"></my-view3>
           <my-view404 name="view404"></my-view404>
@@ -131,6 +132,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             observer: '_pageChanged',
           },
           user: {
+            type: Object,
+            value: null
+          },
+          queryParams: {
             type: Object,
             value: null
           },
