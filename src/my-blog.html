@@ -1,0 +1,92 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="my-blog">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+
+        padding: 10px;
+      }
+    </style>
+
+    <h2>[[item.title]]</h2>
+    
+    <p class="subtext">
+      by: [[item.name]]<br/>
+      [[toDate(item.date)]]
+    </p>
+    <p>
+      [[item.text]]
+    </p>
+    <template is="dom-if" if="[[checkUser(item.owner, user.uid)]]">
+      <a href="/?key=[[item.$key]]">
+        <paper-button raised>Edit</paper-button>  
+      </a>  
+      <paper-button raised on-tap="deleteBlog" key$="[[item.$key]]">Delete</paper-button>
+    </template>
+  </template>
+
+  <script>
+    class Myblog extends Polymer.Element {
+      static get is() { return 'my-blog'; }
+      
+      static get properties() {
+        return {
+          blogId: {
+            type: String,
+            observer: 'checkBlog'
+          },
+          item: {
+            type: Object,
+            value: {}
+          }
+        }
+      }
+      
+      checkBlog(id) {
+        if (id) {
+          var ref = firebase.database().ref('blogModel/blog/' + id)
+          ref.on('value', (data) => {
+            this.item = data.val()
+            this.item.$key = data.key;
+          })  
+        }
+      }
+      
+      toDate(date) {
+        return new Date(date)
+      }
+      
+      checkUser(a, b) {
+        return a === b
+      }
+      
+      deleteBlog(e) {
+        var id = e.target.getAttribute('key');
+        if (this.user.uid && id) {
+          firebase.database().ref('blogModel/blog/' + id).remove().then(() => {
+            console.log('deleted')
+          }).catch(error => {
+            console.log(error)
+          })
+        }
+      }
+      
+      
+    }
+
+    window.customElements.define(Myblog.is, Myblog);
+  </script>
+</dom-module>
