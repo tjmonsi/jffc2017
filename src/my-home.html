@@ -31,7 +31,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <form>
         <input id="title" placeholder="Title"><br/>
         <textarea id="text"></textarea><br/>
-        <button on-click="submitBlog">Create blog</button>
+        <button on-click="submitBlog">Submit blog</button>
       </form>  
     </template>
     
@@ -48,7 +48,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           [[item.text]]
         </p>
         <template is="dom-if" if="[[checkUser(item.owner, user.uid)]]">
-          <a href="/?key=[[item.$key]]">
+          <a href="/blog/?key=[[item.$key]]&edit=true">
             <paper-button raised>Edit</paper-button>  
           </a>  
           <paper-button raised on-tap="deleteBlog" key$="[[item.$key]]">Delete</paper-button>

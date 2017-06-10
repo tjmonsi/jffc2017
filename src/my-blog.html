@@ -23,6 +23,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <h2>[[item.title]]</h2>
     
+    <template is="dom-if" if="[[checkUserAndEdit(item.owner, user.uid, edit)]]">
+      <form>
+        <input id="title" placeholder="Title" value="[[item.title]]"><br/>
+        <textarea id="text" value="[[item.text]]"></textarea><br/>
+        <button on-click="submitBlog">Edit blog</button>
+      </form>  
+    </template>
+    
     <p class="subtext">
       by: [[item.name]]<br/>
       [[toDate(item.date)]]
@@ -31,7 +39,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       [[item.text]]
     </p>
     <template is="dom-if" if="[[checkUser(item.owner, user.uid)]]">
-      <a href="/?key=[[item.$key]]">
+      <a href="/blog/?key=[[item.$key]]&edit=true">
         <paper-button raised>Edit</paper-button>  
       </a>  
       <paper-button raised on-tap="deleteBlog" key$="[[item.$key]]">Delete</paper-button>
@@ -73,6 +81,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         return a === b
       }
       
+      checkUserAndEdit(a, b, c) {
+        return c && this.checkUser(a,b);
+      }
+      
       deleteBlog(e) {
         var id = e.target.getAttribute('key');
         if (this.user.uid && id) {
@@ -84,7 +96,27 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       }
       
-      
+      submitBlog(e) {
+        e.preventDefault();
+        var user = firebase.auth().currentUser;
+        if (user.uid && this.edit) {
+          var ref = firebase.database().ref('blogModel/blog')
+          var key = this.blogId;
+          var updates = {};
+          updates[key] = {
+            title: this.shadowRoot.querySelector('#title').value,
+            text: this.shadowRoot.querySelector('#text').value,
+            owner: user.uid,
+            name: user.displayName,
+            date: firebase.database.ServerValue.TIMESTAMP
+          }
+          
+          ref.update(updates).then(() => {
+            console.log('edited')
+          })  
+        }
+        
+      }
     }
 
     window.customElements.define(Myblog.is, Myblog);
