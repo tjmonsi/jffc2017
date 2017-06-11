@@ -1,0 +1,115 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="my-view1">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+
+        padding: 10px;
+      }
+    </style>
+
+    <h2>Microblog</h2>
+    
+    <template is="dom-if" if="[[user]]">
+      <form>
+        <input id="title" placeholder="Title"><br/>
+        <textarea id="text"></textarea><br/>
+        <paper-button on-tap="submitBlog">Submit Blog</paper-button>
+      </form>
+    </template>
+    
+    <template is="dom-repeat" items="[[blogs]]" sort="sortByDate"> 
+      <h3>[[item.title]]</h3>
+      <p style="font-size: 12px">
+        Date: [[renderDate(item.date)]]
+      </p>
+      <hr>
+      <p>
+        [[item.text]]
+      </p>
+    </template>
+    
+    <!-- 
+      for (var i = 0; i < blogs.length; i++) {
+        println(<h3>blogs[i].title</h3>)
+        println(<p>blogs[i].text</p>)
+      }
+    
+    -->
+  </template>
+
+  <script>
+    class MyView1 extends Polymer.Element {
+      static get is() { return 'my-view1'; }
+      
+      static get properties() {
+        return {
+          blogs: {
+            type: Array,
+            value: []
+          }
+        }
+      }
+      
+      connectedCallback() {
+        super.connectedCallback()
+        var ref = firebase.database().ref('blogModel/blog').orderByChild('date').limitToLast(5);
+        ref.on('child_added', (child) => {
+          var data = child.val();
+          data.$key = child.key;
+          this.push('blogs', data) // --> blogs.push(data)
+        })
+        
+        ref.on('child_removed', (child) => {
+          for (var i=0; i< this.blogs.length; i++) {
+            if (this.blogs[i].$key === child.key) {
+              this.splice('blogs', i, 1)
+              break
+            }
+          }
+        })
+      }
+      
+      submitBlog(e) {
+        e.preventDefault()
+        
+        var ref = firebase.database().ref('blogModel/blog')
+        var obj = {
+          title: this.shadowRoot.querySelector('#title').value,
+          text: this.shadowRoot.querySelector('#text').value,
+          date: firebase.database.ServerValue.TIMESTAMP
+        }
+        
+        ref.push(obj).then(() => {
+          this.shadowRoot.querySelector('#title').value = ''
+          this.shadowRoot.querySelector('#text').value = ''
+        })
+        
+      }
+      
+      renderDate(date) {
+        return new Date(date);
+      }
+      
+      sortByDate(previousItem, nextItem) {
+        return nextItem.date - previousItem.date
+        // is nextItem.date > previousItem.date put nextItem sa huli
+      }
+    }
+
+    window.customElements.define(MyView1.is, MyView1);
+  </script>
+</dom-module>
